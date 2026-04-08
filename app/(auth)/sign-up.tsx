@@ -1,4 +1,4 @@
-import { useSignUp } from "@clerk/clerk-expo";
+import { useAuth, useClerk } from "@clerk/expo";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, ScrollView, Text, View } from "react-native";
@@ -6,12 +6,17 @@ import { ReactNativeModal } from "react-native-modal";
 
 import CustomButton from "components/CustomButton";
 import InputField from "components/InputField";
-import OAuth from "@/components/OAuth";
-import { icons, images } from "constants";
-import { fetchAPI } from "@/lib/fetch";
+import OAuth from "components/OAuth";
+import { icons, images } from "constant";
+import { fetchAPI } from "lib/fetch";
 
 const SignUp = () => {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  
+
+const { client, setActive } = useClerk();
+  const signUp = client.signUp; // ← get signUp from client
+const { isSignedIn, isLoaded } = useAuth({ treatPendingAsSignedOut: false })
+
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [form, setForm] = useState({
