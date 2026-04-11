@@ -5,13 +5,20 @@
     "scheme": "uberclonewithrealtimemap",
     "version": "1.0.0",
     "web": {
+      "bundler": "metro",
+      "output": "server",
       "favicon": "./assets/favicon.png"
     },
     "experiments": {
       "tsconfigPaths": true
     },
     "plugins": [
+      [
       "expo-router",
+      {
+        "origin": "http://localhost:8081"
+      }
+    ],
       "@clerk/expo",
       "expo-secure-store",
       "expo-web-browser"
