@@ -36,7 +36,12 @@
     ],
     "ios": {
   "supportsTablet": true,
-  "bundleIdentifier": "com.alisultan.uberclone"
+  "bundleIdentifier": "com.alisultan.uberclone",
+  "infoPlist": {
+    "NSLocationWhenInUseUsageDescription": "This app needs your location to find nearby rides.",
+    "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to track your ride.",
+    "NSLocationAlwaysUsageDescription": "This app needs your location to track your ride in the background."
+  }
 },
 "android": {
   "adaptiveIcon": {
