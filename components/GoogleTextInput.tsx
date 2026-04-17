@@ -4,7 +4,11 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { icons } from "constant";
 import { GoogleInputProps } from "@/types/type";
 
-const googlePlacesApiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+import Constants from "expo-constants";
+
+const googlePlacesApiKey =
+  process.env.EXPO_PUBLIC_GOOGLE_API_KEY ||
+  Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 const GoogleTextInput = ({
   icon,

@@ -12,6 +12,9 @@
     "experiments": {
       "tsconfigPaths": true
     },
+    "extra": {
+      "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyA_U0QojEnySRuytb4C_2sahq2CxZvCFCE"
+    },
     "plugins": [
       [
       "expo-router",

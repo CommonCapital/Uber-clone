@@ -1,6 +1,9 @@
+import Constants from "expo-constants";
 import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const directionsAPI =
+  process.env.EXPO_PUBLIC_GOOGLE_API_KEY ||
+  Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 export const generateMarkersFromData = ({
   data,
@@ -35,7 +38,7 @@ export const calculateRegion = ({
   destinationLatitude?: number | null;
   destinationLongitude?: number | null;
 }) => {
-  if (!userLatitude || !userLongitude) {
+  if (userLatitude == null || userLongitude == null) {
     return {
       latitude: 37.78825,
       longitude: -122.4324,
@@ -44,7 +47,7 @@ export const calculateRegion = ({
     };
   }
 
-  if (!destinationLatitude || !destinationLongitude) {
+  if (destinationLatitude == null || destinationLongitude == null) {
     return {
       latitude: userLatitude,
       longitude: userLongitude,
@@ -58,8 +61,8 @@ export const calculateRegion = ({
   const minLng = Math.min(userLongitude, destinationLongitude);
   const maxLng = Math.max(userLongitude, destinationLongitude);
 
-  const latitudeDelta = (maxLat - minLat) * 1.3; // Adding some padding
-  const longitudeDelta = (maxLng - minLng) * 1.3; // Adding some padding
+  const latitudeDelta = Math.max((maxLat - minLat) * 1.3, 0.01); // Adding some padding and a minimum delta
+  const longitudeDelta = Math.max((maxLng - minLng) * 1.3, 0.01); // Adding some padding and a minimum delta
 
   const latitude = (userLatitude + destinationLatitude) / 2;
   const longitude = (userLongitude + destinationLongitude) / 2;
@@ -70,6 +73,29 @@ export const calculateRegion = ({
     latitudeDelta,
     longitudeDelta,
   };
+};
+
+const getRouteDuration = (data: any) => {
+  if (!data || data.status !== "OK") {
+    const status = data?.status || "NO_STATUS";
+    const errorMessage = data?.error_message || data?.errorMessage || "unknown error";
+    throw new Error(
+      `Directions API returned invalid route data: ${status} - ${errorMessage}`,
+    );
+  }
+
+  if (
+    !Array.isArray(data.routes) ||
+    !data.routes[0] ||
+    !Array.isArray(data.routes[0].legs) ||
+    !data.routes[0].legs[0] ||
+    !data.routes[0].legs[0].duration ||
+    typeof data.routes[0].legs[0].duration.value !== "number"
+  ) {
+    throw new Error("Directions API returned invalid route data.");
+  }
+
+  return data.routes[0].legs[0].duration.value;
 };
 
 export const calculateDriverTimes = async ({
@@ -90,8 +116,14 @@ export const calculateDriverTimes = async ({
     !userLongitude ||
     !destinationLatitude ||
     !destinationLongitude
-  )
-    return;
+  ) {
+    return markers.map((marker) => ({ ...marker, time: 0, price: "0.00" }));
+  }
+
+  if (!directionsAPI) {
+    console.error("Google Directions API key is missing. Check app config or .env setup.");
+    return markers.map((marker) => ({ ...marker, time: 0, price: "0.00" }));
+  }
 
   try {
     const timesPromises = markers.map(async (marker) => {
@@ -99,14 +131,13 @@ export const calculateDriverTimes = async ({
         `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`,
       );
       const dataToUser = await responseToUser.json();
-      const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
+      const timeToUser = getRouteDuration(dataToUser); // Time in seconds
 
       const responseToDestination = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`,
       );
       const dataToDestination = await responseToDestination.json();
-      const timeToDestination =
-        dataToDestination.routes[0].legs[0].duration.value; // Time in seconds
+      const timeToDestination = getRouteDuration(dataToDestination); // Time in seconds
 
       const totalTime = (timeToUser + timeToDestination) / 60; // Total time in minutes
       const price = (totalTime * 0.5).toFixed(2); // Calculate price based on time
@@ -117,5 +148,6 @@ export const calculateDriverTimes = async ({
     return await Promise.all(timesPromises);
   } catch (error) {
     console.error("Error calculating driver times:", error);
+    return markers.map((marker) => ({ ...marker, time: 0, price: "0.00" }));
   }
 };
