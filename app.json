@@ -2,12 +2,12 @@
   "expo": {
     "name": "my-expo-app",
     "slug": "my-expo-app",
-    "scheme": "uberclonewithrealtimemap",
+    "scheme": "nearby",
     "version": "1.0.0",
     "web": {
       "bundler": "metro",
       "output": "server",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     },
     "experiments": {
       "tsconfigPaths": true
@@ -16,21 +16,29 @@
       "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyA_U0QojEnySRuytb4C_2sahq2CxZvCFCE"
     },
     "plugins": [
+      "expo-dev-client",
       [
-      "expo-router",
-      {
-        "origin": "http://localhost:8081"
-      }
-    ],
+        "expo-router",
+        {
+          "origin": "http://localhost:8081"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Nearby requires your location to radar scan the area for nearby people."
+        }
+      ],
       "@clerk/expo",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      "react-native-maps"
     ],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -38,20 +46,22 @@
       "**/*"
     ],
     "ios": {
-  "supportsTablet": true,
-  "bundleIdentifier": "com.alisultan.uberclone",
-  "infoPlist": {
-    "NSLocationWhenInUseUsageDescription": "This app needs your location to find nearby rides.",
-    "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to track your ride.",
-    "NSLocationAlwaysUsageDescription": "This app needs your location to track your ride in the background."
-  }
-},
-"android": {
-  "adaptiveIcon": {
-    "foregroundImage": "./assets/adaptive-icon.png",
-    "backgroundColor": "#ffffff"
-  },
-  "package": "com.alisultan.uberclone"
-}
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alisultan.uberclone",
+      "newArchEnabled": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Nearby needs your location to find nearby people.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Nearby needs your location to track proximity.",
+        "NSLocationAlwaysUsageDescription": "Nearby needs your location to track proximity in the background."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.alisultan.uberclone",
+      "newArchEnabled": true
+    }
   }
 }

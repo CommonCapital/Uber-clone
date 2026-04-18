@@ -71,14 +71,14 @@ const Map = () => {
 
   if (loading || (!userLatitude && !userLongitude))
     return (
-      <View className="flex justify-between items-center w-full">
+      <View className="flex justify-center items-center w-full h-full">
         <ActivityIndicator size="small" color="#000" />
       </View>
     );
 
   if (error)
     return (
-      <View className="flex justify-between items-center w-full">
+      <View className="flex justify-center items-center w-full h-full">
         <Text>Error: {error}</Text>
       </View>
     );
@@ -86,7 +86,8 @@ const Map = () => {
   return (
     <MapView
       provider={PROVIDER_DEFAULT}
-      className="w-full h-full rounded-2xl"
+      className="w-full h-full"
+      style={{ width: "100%", height: "100%" }}
       tintColor="black"
       mapType="mutedStandard"
       showsPointsOfInterests={false}

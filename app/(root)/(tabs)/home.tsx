@@ -74,7 +74,7 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView className="bg-general-500">
+    <SafeAreaView className="flex-1 bg-general-500">
       <FlatList
         data={recentRides?.slice(0, 5)}
         renderItem={({ item }) => <RideCard ride={item} />}
@@ -125,7 +125,7 @@ const Home = () => {
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your current location
               </Text>
-              <View className="flex flex-row items-center bg-transparent h-[300px]">
+              <View className="flex flex-row items-center bg-transparent h-[300px] w-full overflow-hidden rounded-2xl">
                 <Map />
               </View>
             </>
