@@ -32,7 +32,14 @@
       "@clerk/expo",
       "expo-secure-store",
       "expo-web-browser",
-      "react-native-maps"
+      "react-native-maps",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.uber",
+          "enableGooglePay": true
+        }
+      ]
     ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
